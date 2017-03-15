@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Streamline</string>
+    <string name="action_settings">Settings</string>
+    <string name="important_and_urgent">Important and Urgent</string>
+    <string name="important_but_not_urgent">Important but not Urgent</string>
+    <string name="not_important_but_urgent">Not Important but Urgent</string>
+    <string name="not_important_and_not_urgent">Not Important and not Urgent</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="task_name">Task name</string>
+    <string name="add_task">Add Task</string>
+    <string name="set_time">set time</string>
+    <string name="set_color">set color</string>
+    <string name="timeStart">00:00</string>
+    <string name="task">task</string>
+    <string name="play_pause_button">play/pause button</string>
+    <string name="header_title">Header Title</string>
+</resources>

@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.charlesanderson.streamline.AddTimerFragment"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/taskName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:hint="@string/task_name"
+        android:inputType="text"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/timeButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/colorButton"
+        android:layout_alignBottom="@+id/colorButton"
+        android:layout_alignStart="@+id/addTaskButton"
+        android:background="@color/material_color_blue_500"
+        android:text="@string/set_time" />
+
+    <Button
+        android:id="@+id/colorButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/taskName"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="56dp"
+        android:layout_toStartOf="@+id/timeButton"
+        android:background="@color/material_color_red_500"
+        android:text="@string/set_color" />
+
+    <Button
+        android:id="@+id/addTaskButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="167dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_task"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="23dp"
+        />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:checkedButton="@+id/defaultCheckedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="63dp">
+        <RadioButton
+            android:id="@+id/defaultCheckedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/important_and_urgent"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/important_but_not_urgent"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_important_but_urgent"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_important_and_not_urgent"/>
+    </RadioGroup>
+
+
+
+
+</RelativeLayout>

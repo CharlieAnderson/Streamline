@@ -1,0 +1,16 @@
+TODO: Make RecyclerView list subsections expandable/collapsible.
+
+TODO: Make play/Pause button toggle when clicked
+
+TODO: Make Play button start timer, and have timer actually start counting up.
+
+TODO: Make progress bar the same color as was selected.
+
+TODO: Make progress bar fill as timer goes up.
+
+TODO: Add functionality to allow timers to repeat daily, on certain days, or only once (possibly even more options)
+
+TODO: Add Long-Press to task ites to allow them to be edited/deleted
+
+TODO: Maybe create a new fragment for when a timer is played with a giant clock and a pause and a stop button. The pause button stops the clock/timer and the stop button takes user back to timer list
+
