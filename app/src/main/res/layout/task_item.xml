@@ -28,7 +28,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/taskName"
                 android:contentDescription="@string/play_pause_button"
-                android:src="@android:drawable/ic_media_play" />
+                android:src="@mipmap/ic_play_arrow_black_24dp" />
 
             <TextView
                 android:id="@+id/timeElapsed"

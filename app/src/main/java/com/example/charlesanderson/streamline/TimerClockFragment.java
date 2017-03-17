@@ -24,7 +24,7 @@ public class TimerClockFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_timer_clock, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_timer_clock, container, false);
         final Bundle arguments = this.getArguments();
         this.taskName = arguments.getString("taskName");
         this.hours = arguments.getInt("hours");
@@ -42,15 +42,17 @@ public class TimerClockFragment extends Fragment {
         this.countDownTimer = new CustomCountDownTimer(countDownStart, 1000, countdownTimerText, circleProgressViewSeconds);
         this.countDownTimer.start();
 
-        ImageButton pauseButton = (ImageButton)rootView.findViewById(R.id.pauseButton);
+        final ImageButton pauseButton = (ImageButton)rootView.findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 countDownTimer.setPaused(!countDownTimer.isPaused);
                 if(countDownTimer.isPaused) {
                     timeLeft = countDownTimer.millisUntilFinished;
+                    pauseButton.setImageDrawable(rootView.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp));
                 }
                 else {
+                    pauseButton.setImageDrawable(rootView.getResources().getDrawable(R.mipmap.ic_pause_black_24dp));
                     countDownTimer = new CustomCountDownTimer((int)timeLeft, 1000, countdownTimerText, circleProgressViewSeconds);
                     circleProgressViewSeconds.setStartAngle(-90);
                     circleProgressViewSeconds.setTextEnabled(false);

@@ -52,8 +52,8 @@ public class CustomCountDownTimer extends CountDownTimer {
         String formattedMinutes;
         String formattedSeconds;
         formattedHours = Integer.toString(hours);
-        if(minutes < 10)
-            formattedMinutes = "0"+minutes;
+        if(minutes%60 < 10)
+            formattedMinutes = "0"+(minutes%60);
         else
             formattedMinutes = Integer.toString(minutes);
         if(seconds%60 < 10)
