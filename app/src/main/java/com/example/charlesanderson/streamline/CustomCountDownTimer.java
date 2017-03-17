@@ -27,7 +27,6 @@ public class CustomCountDownTimer extends CountDownTimer {
         if(!this.isPaused) {
             this.millisUntilFinished = millisUntilFinished;
             this.countDownTimerText.setText(parseTime((int) millisUntilFinished));
-            System.out.println((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0));
             circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
         }
     }
@@ -55,7 +54,7 @@ public class CustomCountDownTimer extends CountDownTimer {
         if(minutes%60 < 10)
             formattedMinutes = "0"+(minutes%60);
         else
-            formattedMinutes = Integer.toString(minutes);
+            formattedMinutes = Integer.toString(minutes%60);
         if(seconds%60 < 10)
             formattedSeconds = "0"+(seconds%60);
         else

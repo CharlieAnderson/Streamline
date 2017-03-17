@@ -74,11 +74,6 @@ class TimerBarAdapter extends RecyclerView.Adapter implements StickyHeaderHandle
         }
         else if(viewHolder instanceof TimerHolder) {
             int index = getTaskListIndex(position);
-            System.out.println("itemCount: "+getItemCount());
-            System.out.println("taskitemslists "+getTaskItemsListsSize());
-            System.out.println("index: "+index);
-            System.out.println("position: "+position);
-
             TaskItem taskItem = taskItemsLists.get(index).get(getTaskListInnerIndex(position));
             viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
             ((TimerHolder)viewHolder).bindTaskTimer(taskItem);
