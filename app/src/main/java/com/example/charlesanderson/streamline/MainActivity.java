@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             headerItems.add(new HeaderItem(TaskItem.Section.NOT_IMPORTANT_AND_URGENT));
             headerItems.add(new HeaderItem(TaskItem.Section.NOT_IMPORTANT_AND_NOT_URGENT));
 
-            this.timerAdapter = new TimerBarAdapter(getApplication(), headerItems, taskItemsLists);
+            this.timerAdapter = new TimerBarAdapter(this, headerItems, taskItemsLists);
             Fragment timerListFragment = new TimerListFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_content, timerListFragment, "LIST_FRAGMENT").commit();
         }

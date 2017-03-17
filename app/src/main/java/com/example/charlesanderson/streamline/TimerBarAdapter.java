@@ -43,23 +43,23 @@ class TimerBarAdapter extends RecyclerView.Adapter implements StickyHeaderHandle
 
         if(viewType == 0) {
             View view = from(parent.getContext()).inflate(R.layout.header_item, parent, false);
-            viewHolder = new HeaderHolder(context, view, TaskItem.Section.IMPORTANT_AND_URGENT);
+            viewHolder = new HeaderHolder(this.context, view, TaskItem.Section.IMPORTANT_AND_URGENT);
         }
         else if(viewType == 1) {
             View view = from(parent.getContext()).inflate(R.layout.header_item, parent, false);
-            viewHolder = new HeaderHolder(context, view, TaskItem.Section.IMPORTANT_AND_NOT_URGENT);
+            viewHolder = new HeaderHolder(this.context, view, TaskItem.Section.IMPORTANT_AND_NOT_URGENT);
         }
         else if(viewType == 2) {
             View view = from(parent.getContext()).inflate(R.layout.header_item, parent, false);
-            viewHolder = new HeaderHolder(context, view, TaskItem.Section.NOT_IMPORTANT_AND_URGENT);
+            viewHolder = new HeaderHolder(this.context, view, TaskItem.Section.NOT_IMPORTANT_AND_URGENT);
         }
         else if(viewType == 3) {
             View view = from(parent.getContext()).inflate(R.layout.header_item, parent, false);
-            viewHolder = new HeaderHolder(context, view, TaskItem.Section.NOT_IMPORTANT_AND_NOT_URGENT);
+            viewHolder = new HeaderHolder(this.context, view, TaskItem.Section.NOT_IMPORTANT_AND_NOT_URGENT);
         }
         else {
             View view = from(parent.getContext()).inflate(R.layout.task_item, parent, false);
-            viewHolder = new TimerHolder(context, view);
+            viewHolder = new TimerHolder(this.context, view);
         }
 
         return viewHolder;
@@ -74,11 +74,6 @@ class TimerBarAdapter extends RecyclerView.Adapter implements StickyHeaderHandle
         }
         else if(viewHolder instanceof TimerHolder) {
             int index = getTaskListIndex(position);
-            System.out.println("itemCount: "+getItemCount());
-            System.out.println("taskitemslists "+getTaskItemsListsSize());
-            System.out.println("index: "+index);
-            System.out.println("position: "+position);
-
             TaskItem taskItem = taskItemsLists.get(index).get(getTaskListInnerIndex(position));
             viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
             ((TimerHolder)viewHolder).bindTaskTimer(taskItem);
