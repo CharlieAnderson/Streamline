@@ -52,6 +52,7 @@ public class TimerHolder extends RecyclerView.ViewHolder {
                 bundle.putString("timeLeft", timeLeft.toString());
                 bundle.putString("timeElapsed", timeElapsed.toString());
                 bundle.putString("taskName", taskItem.getTaskName());
+                bundle.putInt("color", taskItem.getColor());
                 timerClockFragment.setArguments(bundle);
                 mainActivity.getSupportFragmentManager().beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_content, timerClockFragment, "CLOCK_FRAGMENT").commit();
