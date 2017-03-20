@@ -1,25 +1,32 @@
 package com.example.charlesanderson.streamline;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
 import com.eralp.circleprogressview.CircleProgressView;
+
+import java.util.List;
 
 /**
  * Created by charlesanderson on 3/17/17.
  */
 
 public class CustomCountDownTimer extends CountDownTimer {
+    Context context;
     boolean isPaused;
     TextView countDownTimerText;
     CircleProgressView circleProgressViewSeconds;
+    int taskPosition;
     long millisUntilFinished;
 
-    public CustomCountDownTimer(int start, int interval, TextView countDownTimerText, CircleProgressView circleProgressViewSeconds) {
+    public CustomCountDownTimer(Context context, int start, int interval, TextView countDownTimerText, CircleProgressView circleProgressViewSeconds, int taskPosition) {
         super(start, interval);
+        this.context = context;
         this.isPaused = false;
         this.countDownTimerText = countDownTimerText;
         this.circleProgressViewSeconds = circleProgressViewSeconds;
+        this.taskPosition = taskPosition;
     }
 
     @Override
@@ -28,6 +35,11 @@ public class CustomCountDownTimer extends CountDownTimer {
             this.millisUntilFinished = millisUntilFinished;
             this.countDownTimerText.setText(parseTime((int) millisUntilFinished));
             circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
+            TimerBarAdapter timerAdapter = (((MainActivity)this.context).getTimerAdapter());
+            timerAdapter.getTaskItem(taskPosition).setHours(getHoursLeft());
+            timerAdapter.getTaskItem(taskPosition).setMinutes(getMinutesLeft());
+            timerAdapter.getTaskItem(taskPosition).setSeconds(getSecondsLeft());
+            timerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -43,6 +55,19 @@ public class CustomCountDownTimer extends CountDownTimer {
         }
     }
 
+    public int getHoursLeft() {
+        return (int)(((this.millisUntilFinished/1000)/60)/60);
+    }
+
+    public int getMinutesLeft() {
+        return (int)(((this.millisUntilFinished/1000)/60)%60);
+
+    }
+
+    public int getSecondsLeft() {
+        return (int)((this.millisUntilFinished/1000)%60);
+
+    }
     public String parseTime(int milliseconds) {
         int seconds = milliseconds/1000;
         int minutes = seconds/60;

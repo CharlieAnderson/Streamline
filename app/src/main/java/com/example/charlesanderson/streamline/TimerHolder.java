@@ -22,6 +22,7 @@ public class TimerHolder extends RecyclerView.ViewHolder {
     private TextView timeLeft;
     private TextView taskName;
     private TaskItem taskItem;
+    private int position;
 
     public TimerHolder(final Context context, View itemView) {
         super(itemView);
@@ -32,6 +33,7 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.timeLeft = (TextView)itemView.findViewById(R.id.timeLeft);
         this.taskName = (TextView)itemView.findViewById(R.id.taskName);
         this.timerBar = (ProgressBar)itemView.findViewById(R.id.timerBar);
+        this.position = getAdapterPosition();
     }
 
     public void bindTaskTimer(final TaskItem taskItem) {
@@ -39,16 +41,19 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.taskItem = taskItem;
         this.timerBar.setBackgroundColor(taskItem.getColor());
         this.timeElapsed.setText(R.string.timeStart);
-        this.timeLeft.setText(parseTime(taskItem.getHours(), taskItem.getMinutes()));
+        this.timeLeft.setText(parseTime(taskItem.getHours(), taskItem.getMinutes(), taskItem.getSeconds()));
         this.taskName.setText(taskItem.getTaskName());
+
         this.startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity)context;
                 Fragment timerClockFragment = new TimerClockFragment();
                 Bundle bundle = new Bundle();
+                bundle.putInt("position", getAdapterPosition());
                 bundle.putInt("hours", taskItem.getHours());
                 bundle.putInt("minutes", taskItem.getMinutes());
+                bundle.putInt("seconds", taskItem.getSeconds());
                 bundle.putString("timeLeft", timeLeft.toString());
                 bundle.putString("timeElapsed", timeElapsed.toString());
                 bundle.putString("taskName", taskItem.getTaskName());
@@ -56,20 +61,25 @@ public class TimerHolder extends RecyclerView.ViewHolder {
                 timerClockFragment.setArguments(bundle);
                 mainActivity.getSupportFragmentManager().beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_content, timerClockFragment, "CLOCK_FRAGMENT").commit();
-
             }
         });
     }
 
-    public String parseTime(int hours, int minutes) {
+    public String parseTime(int hours, int minutes, int seconds) {
         String formattedHours;
         String formattedMinutes;
+        String formattedSeconds;
+
         formattedHours = Integer.toString(hours);
         if(minutes < 10)
             formattedMinutes = "0"+minutes;
         else
             formattedMinutes = Integer.toString(minutes);
-        return  formattedHours+":"+formattedMinutes;
+        if(seconds<10)
+            formattedSeconds = "0"+seconds;
+        else
+            formattedSeconds = Integer.toString(seconds);
+        return  formattedHours+":"+formattedMinutes+":"+formattedSeconds;
     }
 
     public TaskItem getTaskItem() {
