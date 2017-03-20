@@ -23,8 +23,6 @@ class TaskItem {
         NOT_IMPORTANT_AND_NOT_URGENT
     }
 
-
-
     TaskItem() {
         this.hours = 0;
         this.minutes = 0;
@@ -34,10 +32,10 @@ class TaskItem {
         this.section = IMPORTANT_AND_URGENT;
     }
 
-    public TaskItem(int hours, int minutes, String taskName) {
+    public TaskItem(int hours, int minutes, int seconds, String taskName) {
         this.hours = hours;
         this.minutes = minutes;
-        this.seconds = 0;
+        this.seconds = seconds;
         this.taskName = taskName;
         this.color = R.color.material_color_red_500;
     }
