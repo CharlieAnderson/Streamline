@@ -12,6 +12,7 @@ class TaskItem {
     private int minutes;
     private int seconds;
     private int color;
+    private int progress;
     private Section section;
     private String taskName;
     private TimerBar timerBar;
@@ -30,6 +31,7 @@ class TaskItem {
         this.taskName = "task";
         this.color = R.color.material_color_red_500;
         this.section = IMPORTANT_AND_URGENT;
+        this.progress = 0;
     }
 
     public TaskItem(int hours, int minutes, int seconds, String taskName) {
@@ -38,6 +40,7 @@ class TaskItem {
         this.seconds = seconds;
         this.taskName = taskName;
         this.color = R.color.material_color_red_500;
+        this.progress = 0;
     }
 
     void setHours(int hours) {
@@ -68,6 +71,10 @@ class TaskItem {
         this.section = section;
     }
 
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
     public int getHours() {
         return hours;
     }
@@ -94,6 +101,10 @@ class TaskItem {
 
     public Section getSection() {
         return section;
+    }
+
+    public int getProgress() {
+        return progress;
     }
 
 }

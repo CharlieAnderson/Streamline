@@ -6,8 +6,6 @@ import android.widget.TextView;
 
 import com.eralp.circleprogressview.CircleProgressView;
 
-import java.util.List;
-
 /**
  * Created by charlesanderson on 3/17/17.
  */
@@ -18,11 +16,13 @@ public class CustomCountDownTimer extends CountDownTimer {
     TextView countDownTimerText;
     CircleProgressView circleProgressViewSeconds;
     int taskPosition;
+    int start;
     long millisUntilFinished;
 
     public CustomCountDownTimer(Context context, int start, int interval, TextView countDownTimerText, CircleProgressView circleProgressViewSeconds, int taskPosition) {
         super(start, interval);
         this.context = context;
+        this.start = start;
         this.isPaused = false;
         this.countDownTimerText = countDownTimerText;
         this.circleProgressViewSeconds = circleProgressViewSeconds;
@@ -39,6 +39,8 @@ public class CustomCountDownTimer extends CountDownTimer {
             timerAdapter.getTaskItem(taskPosition).setHours(getHoursLeft());
             timerAdapter.getTaskItem(taskPosition).setMinutes(getMinutesLeft());
             timerAdapter.getTaskItem(taskPosition).setSeconds(getSecondsLeft());
+            int progress = (int)((millisUntilFinished*100)/(start));
+            timerAdapter.getTaskItem(taskPosition).setProgress(100-progress);
             timerAdapter.notifyDataSetChanged();
         }
     }
@@ -46,6 +48,8 @@ public class CustomCountDownTimer extends CountDownTimer {
     @Override
     public void onFinish() {
         countDownTimerText.setText("done!");
+        TimerBarAdapter timerAdapter = (((MainActivity)this.context).getTimerAdapter());
+        timerAdapter.getTaskItem(taskPosition).setProgress(100);
     }
 
     public void setPaused(boolean isPaused){

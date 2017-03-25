@@ -1,6 +1,7 @@
 package com.example.charlesanderson.streamline;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.timeElapsed.setText(R.string.timeStart);
         this.timeLeft.setText(parseTime(taskItem.getHours(), taskItem.getMinutes(), taskItem.getSeconds()));
         this.taskName.setText(taskItem.getTaskName());
+        setProgress(taskItem.getProgress());
 
         this.startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +82,13 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         else
             formattedSeconds = Integer.toString(seconds);
         return  formattedHours+":"+formattedMinutes+":"+formattedSeconds;
+    }
+
+    public void setProgress(int progress) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            this.timerBar.setProgress(progress, true);
+        else
+            this.timerBar.setProgress(progress);
     }
 
     public TaskItem getTaskItem() {
