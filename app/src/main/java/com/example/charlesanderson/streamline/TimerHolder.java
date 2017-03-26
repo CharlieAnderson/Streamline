@@ -28,7 +28,6 @@ public class TimerHolder extends RecyclerView.ViewHolder {
     public TimerHolder(final Context context, View itemView) {
         super(itemView);
         this.context = context;
-       // this.timerBar = (TimerBar)itemView.findViewById(R.id.timerBar);
         this.startStopButton = (ImageButton)itemView.findViewById(R.id.startStopButton);
         this.timeElapsed = (TextView)itemView.findViewById(R.id.timeElapsed);
         this.timeLeft = (TextView)itemView.findViewById(R.id.timeLeft);

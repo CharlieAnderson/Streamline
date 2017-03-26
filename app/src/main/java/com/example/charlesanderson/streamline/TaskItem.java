@@ -1,5 +1,7 @@
 package com.example.charlesanderson.streamline;
 
+import java.io.Serializable;
+
 import static com.example.charlesanderson.streamline.TaskItem.Section.IMPORTANT_AND_URGENT;
 
 /**
@@ -7,7 +9,7 @@ import static com.example.charlesanderson.streamline.TaskItem.Section.IMPORTANT_
  *
  */
 
-class TaskItem {
+class TaskItem implements Serializable {
     private int hours;
     private int minutes;
     private int seconds;
@@ -15,7 +17,6 @@ class TaskItem {
     private int progress;
     private Section section;
     private String taskName;
-    private TimerBar timerBar;
 
     public enum Section {
         IMPORTANT_AND_URGENT,
@@ -43,6 +44,18 @@ class TaskItem {
         this.progress = 0;
     }
 
+    public TaskItem(int hours, int minutes, int seconds, int color, int progress, Section section, String taskName) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+        this.color = color;
+        this.progress = progress;
+        this.section = section;
+        this.taskName = taskName;
+        this.color = R.color.material_color_red_500;
+        this.progress = 0;
+    }
+
     void setHours(int hours) {
         this.hours = hours;
     }
@@ -61,10 +74,6 @@ class TaskItem {
 
     void setTaskName(String taskName) {
         this.taskName = taskName;
-    }
-
-    public void setTimerBar(TimerBar timerBar) {
-        this.timerBar = timerBar;
     }
 
     public void setSection(Section section) {
@@ -93,10 +102,6 @@ class TaskItem {
 
     public String getTaskName() {
         return taskName;
-    }
-
-    public TimerBar getTimerBar() {
-        return timerBar;
     }
 
     public Section getSection() {

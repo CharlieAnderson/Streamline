@@ -1,5 +1,6 @@
 package com.example.charlesanderson.streamline;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +30,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if(getSupportFragmentManager().findFragmentById(R.id.content_main) == null) {
             this.headerItems = new ArrayList<>();
-            this.taskItemsLists = new ArrayList<>();
             this.timerAdapters = new ArrayList<>();
 
-            this.taskItemsLists.add(new ArrayList<TaskItem>());
-            this.taskItemsLists.add(new ArrayList<TaskItem>());
-            this.taskItemsLists.add(new ArrayList<TaskItem>());
-            this.taskItemsLists.add(new ArrayList<TaskItem>());
+            this.readFile();
+            if(taskItemsLists == null) {
+                this.taskItemsLists = new ArrayList<>();
+                this.taskItemsLists.add(new ArrayList<TaskItem>());
+                this.taskItemsLists.add(new ArrayList<TaskItem>());
+                this.taskItemsLists.add(new ArrayList<TaskItem>());
+                this.taskItemsLists.add(new ArrayList<TaskItem>());
+            }
 
             headerItems.add(new HeaderItem(TaskItem.Section.IMPORTANT_AND_URGENT));
             headerItems.add(new HeaderItem(TaskItem.Section.IMPORTANT_AND_NOT_URGENT));
@@ -66,6 +74,46 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveFile();
+    }
+
+    public void saveFile() {
+        String filename = "streamlineFile";
+        FileOutputStream fileOutputStream;
+        ObjectOutputStream objectOutputStream;
+
+        try {
+            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(getTaskItemsLists());
+            fileOutputStream.close();
+            objectOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readFile() {
+        String filename = "streamlineFile";
+        FileInputStream fileInputStream;
+        ObjectInputStream objectInputStream;
+
+        try {
+            fileInputStream = this.openFileInput(filename);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            List<List<TaskItem>> input = (List<List<TaskItem>>)objectInputStream.readObject();
+            if(input!=null)
+                setTaskItemsLists(input);
+            fileInputStream.close();
+            objectInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addTask(TaskItem task) {
