@@ -32,15 +32,18 @@ public class TimerClockFragment extends Fragment {
         this.minutes = arguments.getInt("minutes");
         this.seconds = arguments.getInt("seconds");
         this.taskPosition = arguments.getInt("position");
+
         TextView taskNameText = (TextView)rootView.findViewById(R.id.taskNameClock);
         taskNameText.setText(this.taskName);
         final TextView countdownTimerText = (TextView)rootView.findViewById(countdownTimer);
         final CircleProgressView circleProgressViewSeconds = (CircleProgressView)rootView.findViewById(R.id.circularProgressViewSeconds);
         final int countDownStart = (hours*60*60*1000) + (minutes*60*1000) + (seconds*1000);
+
         circleProgressViewSeconds.setStartAngle(-90);
         circleProgressViewSeconds.setTextEnabled(false);
         circleProgressViewSeconds.setTextSuffix("% Complete");
         circleProgressViewSeconds.setCircleColor(arguments.getInt("color"));
+
         this.countDownTimer = new CustomCountDownTimer(getActivity(), countDownStart, 1000, countdownTimerText, circleProgressViewSeconds, taskPosition);
         this.countDownTimer.start();
 
