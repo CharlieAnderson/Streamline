@@ -50,9 +50,15 @@ public class TimerListFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
             {
-                if(viewHolder instanceof TimerHolder) {
+                if((viewHolder instanceof TimerHolder) && !(viewHolder instanceof HeaderHolder)) {
                     timerBarAdapter.removeTaskItem(((TimerHolder) viewHolder).getSection(), viewHolder.getAdapterPosition());
                 }
+            }
+
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof HeaderHolder) return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
             }
         });
         swipeToDismissHelper.attachToRecyclerView(recyclerView1);
