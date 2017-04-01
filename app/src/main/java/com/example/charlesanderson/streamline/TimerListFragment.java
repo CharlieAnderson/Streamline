@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import static com.example.charlesanderson.streamline.R.id.recyclerView;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -36,7 +38,7 @@ public class TimerListFragment extends Fragment {
 
         List<TimerBarAdapter> timerAdapters = ((MainActivity) getActivity()).getTimerAdapters();
         final TimerBarAdapter timerBarAdapter = ((MainActivity) getActivity()).getTimerAdapter();
-        final RecyclerView recyclerView1= (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView1= (RecyclerView) rootView.findViewById(recyclerView);
         recyclerView1.setAdapter(timerBarAdapter);
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -44,15 +46,19 @@ public class TimerListFragment extends Fragment {
                 ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
+                if(viewHolder instanceof HeaderHolder || target instanceof HeaderHolder)
+                    return false;
+                timerBarAdapter.onItemMove(viewHolder.getAdapterPosition(),
+                                            ((TimerHolder) viewHolder).getSection(),
+                                            target.getAdapterPosition(),
+                                            ((TimerHolder) target).getSection());
+                return true;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
             {
-                if((viewHolder instanceof TimerHolder) && !(viewHolder instanceof HeaderHolder)) {
-                    timerBarAdapter.removeTaskItem(((TimerHolder) viewHolder).getSection(), viewHolder.getAdapterPosition());
-                }
+                timerBarAdapter.removeTaskItem(((TimerHolder) viewHolder).getSection(), viewHolder.getAdapterPosition());
             }
 
             @Override
