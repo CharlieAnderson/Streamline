@@ -15,6 +15,8 @@ class TaskItem implements Serializable {
     private int seconds;
     private int color;
     private int progress;
+    private long timeElapsed;
+    private long timeTotal;  // millisconds that the clock was originally set for
     private Section section;
     private String taskName;
 
@@ -33,28 +35,10 @@ class TaskItem implements Serializable {
         this.color = R.color.material_color_red_500;
         this.section = IMPORTANT_AND_URGENT;
         this.progress = 0;
+        this.timeElapsed = 0;
+        this.timeTotal = 0;
     }
 
-    public TaskItem(int hours, int minutes, int seconds, String taskName) {
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.taskName = taskName;
-        this.color = R.color.material_color_red_500;
-        this.progress = 0;
-    }
-
-    public TaskItem(int hours, int minutes, int seconds, int color, int progress, Section section, String taskName) {
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.color = color;
-        this.progress = progress;
-        this.section = section;
-        this.taskName = taskName;
-        this.color = R.color.material_color_red_500;
-        this.progress = 0;
-    }
 
     void setHours(int hours) {
         this.hours = hours;
@@ -82,6 +66,14 @@ class TaskItem implements Serializable {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public void setTimeElapsed(long timeElapsed) {
+        this.timeElapsed = timeElapsed;
+    }
+
+    public void setTimeTotal(long timeTotal) {
+        this.timeTotal = timeTotal;
     }
 
     public int getHours() {
@@ -112,4 +104,11 @@ class TaskItem implements Serializable {
         return progress;
     }
 
+    public long getTimeElapsed() {
+        return timeElapsed;
+    }
+
+    public long getTimeTotal() {
+        return timeTotal;
+    }
 }

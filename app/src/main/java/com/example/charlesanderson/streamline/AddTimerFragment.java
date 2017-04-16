@@ -17,8 +17,9 @@ import com.thebluealliance.spectrum.SpectrumDialog;
 
 public class AddTimerFragment extends Fragment {
     private int color = 0;
-    private int hours = 0;
-    private int minutes = 0;
+    private int hours;
+    private int minutes;
+    private int timeInMilliseconds = 0;
 
     public AddTimerFragment() {
         // Required empty public constructor
@@ -57,6 +58,7 @@ public class AddTimerFragment extends Fragment {
                     public void onTimeSet(TimePicker view, int hour, int minute) {
                         AddTimerFragment.this.hours = hour;
                         AddTimerFragment.this.minutes = minute;
+                        AddTimerFragment.this.timeInMilliseconds = hour*1000*60*60 + minute*1000*60;
                     }
                 }, 0, 0);
                 timerPickerDialog.show();
@@ -74,6 +76,8 @@ public class AddTimerFragment extends Fragment {
                 TaskItem newTask = new TaskItem();
                 newTask.setHours(hours);
                 newTask.setMinutes(minutes);
+                newTask.setTimeElapsed(0);
+                newTask.setTimeTotal(timeInMilliseconds);
                 newTask.setColor(AddTimerFragment.this.color);
                 newTask.setTaskName(taskName.getText().toString());
                 newTask.setSection(TaskItem.Section.values()[buttonIndex]);
