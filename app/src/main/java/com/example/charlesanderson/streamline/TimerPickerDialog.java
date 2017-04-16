@@ -8,6 +8,7 @@ import android.widget.TimePicker;
 class TimerPickerDialog extends TimePickerDialog {
     private int hours;
     private int minutes;
+    private int timeInMilliseconds;
 
     public TimerPickerDialog(Context context, int theme,
                              OnTimeSetListener callBack, int hour, int minute) {
@@ -15,6 +16,7 @@ class TimerPickerDialog extends TimePickerDialog {
         updateTitle(hour, minute);
         this.hours = hour;
         this.minutes = minute;
+        this.timeInMilliseconds = hour*1000*60*60 + minute*1000*60;
     }
 
     TimerPickerDialog(Context context, OnTimeSetListener callBack,
@@ -23,6 +25,7 @@ class TimerPickerDialog extends TimePickerDialog {
         updateTitle(hour, minute);
         this.hours = hour;
         this.minutes = minute;
+        this.timeInMilliseconds = hour*1000*60*60 + minute*1000*60;
     }
 
     @Override
@@ -31,6 +34,7 @@ class TimerPickerDialog extends TimePickerDialog {
         updateTitle(hour, minute);
         this.hours = hour;
         this.minutes = minute;
+        this.timeInMilliseconds = hour*1000*60*60 + minute*1000*60;
     }
 
     private void updateTitle(int hour, int minute) {
@@ -52,5 +56,9 @@ class TimerPickerDialog extends TimePickerDialog {
 
     public int getMinutes() {
         return minutes;
+    }
+
+    public int getTimeInMilliseconds() {
+        return timeInMilliseconds;
     }
 }

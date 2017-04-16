@@ -16,6 +16,8 @@ public class TimerClockFragment extends Fragment {
     int hours;
     int minutes;
     int seconds;
+    long timeTotal;
+    long timeElapsed;
     int taskPosition;
     long timeLeft;
     String taskName;
@@ -31,20 +33,21 @@ public class TimerClockFragment extends Fragment {
         this.hours = arguments.getInt("hours");
         this.minutes = arguments.getInt("minutes");
         this.seconds = arguments.getInt("seconds");
+        this.timeTotal = arguments.getLong("timeTotal");
+        this.timeElapsed = arguments.getLong("timeElapsed");
         this.taskPosition = arguments.getInt("position");
 
         TextView taskNameText = (TextView)rootView.findViewById(R.id.taskNameClock);
         taskNameText.setText(this.taskName);
         final TextView countdownTimerText = (TextView)rootView.findViewById(countdownTimer);
         final CircleProgressView circleProgressViewSeconds = (CircleProgressView)rootView.findViewById(R.id.circularProgressViewSeconds);
-        final int countDownStart = (hours*60*60*1000) + (minutes*60*1000) + (seconds*1000);
 
         circleProgressViewSeconds.setStartAngle(-90);
         circleProgressViewSeconds.setTextEnabled(false);
         circleProgressViewSeconds.setTextSuffix("% Complete");
         circleProgressViewSeconds.setCircleColor(arguments.getInt("color"));
 
-        this.countDownTimer = new CustomCountDownTimer(getActivity(), countDownStart, 1000, countdownTimerText, circleProgressViewSeconds, taskPosition);
+        this.countDownTimer = new CustomCountDownTimer(getActivity(), timeElapsed, timeTotal, 1000, countdownTimerText, circleProgressViewSeconds, taskPosition);
         this.countDownTimer.start();
 
         final ImageButton pauseButton = (ImageButton)rootView.findViewById(R.id.pauseButton);
@@ -53,12 +56,12 @@ public class TimerClockFragment extends Fragment {
             public void onClick(View v) {
                 countDownTimer.setPaused(!countDownTimer.isPaused);
                 if(countDownTimer.isPaused) {
-                    timeLeft = countDownTimer.millisUntilFinished;
+                    timeLeft = countDownTimer.timeLeft;
                     pauseButton.setImageDrawable(rootView.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp));
                 }
                 else {
                     pauseButton.setImageDrawable(rootView.getResources().getDrawable(R.mipmap.ic_pause_black_24dp));
-                    countDownTimer = new CustomCountDownTimer(getActivity(), (int)timeLeft, 1000, countdownTimerText, circleProgressViewSeconds, taskPosition);
+                    countDownTimer = new CustomCountDownTimer(getActivity(), timeElapsed, timeTotal, 1000, countdownTimerText, circleProgressViewSeconds, taskPosition);
                     circleProgressViewSeconds.setStartAngle(-90);
                     circleProgressViewSeconds.setTextEnabled(false);
                     circleProgressViewSeconds.setTextSuffix("% Complete");
@@ -73,10 +76,18 @@ public class TimerClockFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 countDownTimer.setPaused(true);
+                timeLeft = countDownTimer.timeLeft;
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
         return rootView;
+    }
+
+    public int convertToMilliseconds(int hours, int minutes, int seconds) {
+        int milliseconds = hours*1000*60*60;
+        milliseconds += minutes*1000*60;
+        milliseconds += seconds*1000;
+        return milliseconds;
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.brandongogetap.stickyheaders.exposed.StickyHeaderHandler;
 
+import java.util.Collections;
 import java.util.List;
 
 import static android.view.LayoutInflater.from;
@@ -150,6 +151,30 @@ class TimerBarAdapter extends RecyclerView.Adapter implements StickyHeaderHandle
     public void removeTaskItem(TaskItem.Section section, int position) {
         this.taskItemsLists.get(section.ordinal()).remove(getTaskListInnerIndex(position));
         notifyItemRemoved(position);
+    }
+
+    public boolean onItemMove(int fromPosition, TaskItem.Section fromSection, int toPosition, TaskItem.Section toSection) {
+        if(fromSection == toSection) {
+            // moving element down
+            if (fromPosition < toPosition) {
+                for (int i = fromSection.ordinal(); i < toSection.ordinal(); i++) {
+                    for (int j = fromPosition; j < toPosition; j++) {
+                        Collections.swap(this.taskItemsLists.get(i), j, j + 1);
+                    }
+                }
+            }
+            //  moving element up
+            else {
+                for (int i = fromSection.ordinal(); i > toSection.ordinal(); i--) {
+                    for (int j = fromPosition; j > toPosition; j--) {
+                        Collections.swap(this.taskItemsLists.get(i), j - fromSection.ordinal(), j - 1 - fromSection.ordinal());
+                    }
+                }
+            }
+
+            notifyItemMoved(fromPosition, toPosition);
+        }
+        return true;
     }
 
     public TaskItem getTaskItem(int position) {

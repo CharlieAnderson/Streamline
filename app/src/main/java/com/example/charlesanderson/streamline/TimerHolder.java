@@ -1,6 +1,7 @@
 package com.example.charlesanderson.streamline;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,9 +40,10 @@ public class TimerHolder extends RecyclerView.ViewHolder {
     public void bindTaskTimer(final TaskItem taskItem) {
         this.section = taskItem.getSection();
         this.taskItem = taskItem;
-        this.timerBar.setBackgroundColor(taskItem.getColor());
+        this.timerBar.getProgressDrawable().setColorFilter(taskItem.getColor(), PorterDuff.Mode.MULTIPLY);
         this.timeElapsed.setText(R.string.timeStart);
-        this.timeLeft.setText(parseTime(taskItem.getHours(), taskItem.getMinutes(), taskItem.getSeconds()));
+        this.timeElapsed.setText(parseTime(taskItem.getTimeElapsed(), true));
+        this.timeLeft.setText(parseTime(taskItem.getTimeTotal()-taskItem.getTimeElapsed(), false));
         this.taskName.setText(taskItem.getTaskName());
         setProgress(taskItem.getProgress());
 
@@ -55,8 +57,9 @@ public class TimerHolder extends RecyclerView.ViewHolder {
                 bundle.putInt("hours", taskItem.getHours());
                 bundle.putInt("minutes", taskItem.getMinutes());
                 bundle.putInt("seconds", taskItem.getSeconds());
+                bundle.putLong("timeTotal", taskItem.getTimeTotal());
                 bundle.putString("timeLeft", timeLeft.toString());
-                bundle.putString("timeElapsed", timeElapsed.toString());
+                bundle.putLong("timeElapsed", taskItem.getTimeElapsed());
                 bundle.putString("taskName", taskItem.getTaskName());
                 bundle.putInt("color", taskItem.getColor());
                 timerClockFragment.setArguments(bundle);
@@ -66,20 +69,26 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public String parseTime(int hours, int minutes, int seconds) {
+    public String parseTime(long milliseconds, boolean roundUp) {
+        int seconds;
+        if(roundUp)
+            seconds = (int)Math.ceil(milliseconds/1000.00);
+        else
+            seconds = (int)Math.floor(milliseconds/1000.00);
+        int minutes = seconds/60;
+        int hours = minutes/60;
         String formattedHours;
         String formattedMinutes;
         String formattedSeconds;
-
         formattedHours = Integer.toString(hours);
-        if(minutes < 10)
-            formattedMinutes = "0"+minutes;
+        if(minutes%60 < 10)
+            formattedMinutes = "0"+(minutes%60);
         else
-            formattedMinutes = Integer.toString(minutes);
-        if(seconds<10)
-            formattedSeconds = "0"+seconds;
+            formattedMinutes = Integer.toString(minutes%60);
+        if(seconds%60 < 10)
+            formattedSeconds = "0"+(seconds%60);
         else
-            formattedSeconds = Integer.toString(seconds);
+            formattedSeconds = Integer.toString(seconds%60);
         return  formattedHours+":"+formattedMinutes+":"+formattedSeconds;
     }
 

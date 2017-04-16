@@ -16,12 +16,15 @@ public class CustomCountDownTimer extends CountDownTimer {
     TextView countDownTimerText;
     CircleProgressView circleProgressViewSeconds;
     int taskPosition;
-    int start;
-    long millisUntilFinished;
+    long start;
+    long timeLeft;
+    long timeTotal;
 
-    public CustomCountDownTimer(Context context, int start, int interval, TextView countDownTimerText, CircleProgressView circleProgressViewSeconds, int taskPosition) {
-        super(start, interval);
+    public CustomCountDownTimer(Context context, long start, long timeTotal, int interval, TextView countDownTimerText, CircleProgressView circleProgressViewSeconds, int taskPosition) {
+        super(timeTotal-start, interval);
         this.context = context;
+        this.timeLeft = timeTotal-start;
+        this.timeTotal = timeTotal;
         this.start = start;
         this.isPaused = false;
         this.countDownTimerText = countDownTimerText;
@@ -32,15 +35,16 @@ public class CustomCountDownTimer extends CountDownTimer {
     @Override
     public void onTick(long millisUntilFinished) {
         if(!this.isPaused) {
-            this.millisUntilFinished = millisUntilFinished;
+            this.timeLeft = (int)millisUntilFinished;
             this.countDownTimerText.setText(parseTime((int) millisUntilFinished));
             circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
             TimerBarAdapter timerAdapter = (((MainActivity)this.context).getTimerAdapter());
             timerAdapter.getTaskItem(taskPosition).setHours(getHoursLeft());
             timerAdapter.getTaskItem(taskPosition).setMinutes(getMinutesLeft());
             timerAdapter.getTaskItem(taskPosition).setSeconds(getSecondsLeft());
-            int progress = (int)((millisUntilFinished*100)/(start));
-            timerAdapter.getTaskItem(taskPosition).setProgress(100-progress);
+            timerAdapter.getTaskItem(taskPosition).setTimeElapsed(timeTotal-timeLeft);
+            double progress = (100.0*((double)timeTotal-timeLeft)/(timeTotal));
+            timerAdapter.getTaskItem(taskPosition).setProgress((int)progress);
             timerAdapter.notifyDataSetChanged();
         }
     }
@@ -48,8 +52,12 @@ public class CustomCountDownTimer extends CountDownTimer {
     @Override
     public void onFinish() {
         countDownTimerText.setText("done!");
+        this.timeLeft = 0;
+        circleProgressViewSeconds.setProgressWithAnimation((float) (timeLeft), 500);
         TimerBarAdapter timerAdapter = (((MainActivity)this.context).getTimerAdapter());
         timerAdapter.getTaskItem(taskPosition).setProgress(100);
+        timerAdapter.getTaskItem(taskPosition).setTimeElapsed(timeTotal);
+        timerAdapter.notifyDataSetChanged();
     }
 
     public void setPaused(boolean isPaused){
@@ -60,16 +68,16 @@ public class CustomCountDownTimer extends CountDownTimer {
     }
 
     public int getHoursLeft() {
-        return (int)(((this.millisUntilFinished/1000)/60)/60);
+        return (int)(((this.timeLeft/1000)/60)/60);
     }
 
     public int getMinutesLeft() {
-        return (int)(((this.millisUntilFinished/1000)/60)%60);
+        return (int)(((this.timeLeft/1000)/60)%60);
 
     }
 
     public int getSecondsLeft() {
-        return (int)((this.millisUntilFinished/1000)%60);
+        return (int)((this.timeLeft/1000)%60);
 
     }
     public String parseTime(int milliseconds) {
