@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i<this.taskItemsLists.size(); i++) {
             for(int j = 0; j<this.taskItemsLists.get(i).size(); j++) {
                 this.taskItemsLists.get(i).get(j).setTimeElapsed(0);
+                this.taskItemsLists.get(i).get(j).setProgress(0);
             }
         }
         this.timerAdapter.notifyDataSetChanged();
