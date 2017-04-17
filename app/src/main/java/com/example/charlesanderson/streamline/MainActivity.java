@@ -1,6 +1,7 @@
 package com.example.charlesanderson.streamline;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private List<TimerBarAdapter> timerAdapters;
     private TimerBarAdapter timerAdapter;
     private BroadcastReceiver resetReceiver;
+    private int notificationID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +162,74 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         this.timerAdapter.notifyDataSetChanged();
+    }
+
+    public void createTimerNotification(TaskItem taskItem) {
+        String taskTitle = taskItem.getTaskName();
+        String timeElapsed = TimerHolder.parseTime(taskItem.getTimeElapsed(), true);
+        String timeTotal = TimerHolder.parseTime(taskItem.getTimeTotal(), false);
+        String progress = String.valueOf((int)Math.ceil(taskItem.getProgress()));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        if(progress.equals("100")) {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(taskTitle + " - Done!")
+                    .setContentText("");
+        }
+        else {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(taskTitle +"    "+progress+"%")
+                    .setContentText(timeElapsed+" / "+timeTotal);
+        }
+
+        // Sets an ID for the notification, so it can be updated
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+                stackBuilder.addParentStack(MainActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+                builder.setContentIntent(resultPendingIntent);
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+                mNotificationManager.notify(this.notificationID, builder.build());
+    }
+
+    public void updateTimerNotification(TaskItem taskItem) {
+        String taskTitle = taskItem.getTaskName();
+        String timeElapsed = TimerHolder.parseTime(taskItem.getTimeElapsed(), true);
+        String timeTotal = TimerHolder.parseTime(taskItem.getTimeTotal(), false);
+        String progress = String.valueOf((int)Math.ceil(taskItem.getProgress()));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        if(progress.equals("100")) {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(taskTitle + " - Done!")
+                    .setContentText("");
+        }
+        else {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(taskTitle +"    "+progress+"%")
+                    .setContentText(timeElapsed+" / "+timeTotal);
+        }
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(this.notificationID, builder.build());
     }
 
     public void addTask(TaskItem task) {
