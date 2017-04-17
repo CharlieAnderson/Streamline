@@ -2,8 +2,10 @@ package com.example.charlesanderson.streamline;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private List<HeaderItem> headerItems;
     private List<TimerBarAdapter> timerAdapters;
     private TimerBarAdapter timerAdapter;
+    private BroadcastReceiver resetReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,15 +48,16 @@ public class MainActivity extends AppCompatActivity {
                 this.taskItemsLists.add(new ArrayList<TaskItem>());
             }
 
+            resetReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // internet lost alert dialog method call from here...
+                    resetTimers();
+                }
+            };
+            registerReceiver(resetReceiver, new IntentFilter("RESET_TIMERS"));
             setTimerReset();
-/*
-            AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, MyReceiver.class);
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_DAY,
-                    AlarmManager.INTERVAL_DAY, alarmIntent);
-*/
+
             headerItems.add(new HeaderItem(TaskItem.Section.IMPORTANT_AND_URGENT));
             headerItems.add(new HeaderItem(TaskItem.Section.IMPORTANT_AND_NOT_URGENT));
             headerItems.add(new HeaderItem(TaskItem.Section.NOT_IMPORTANT_AND_URGENT));
@@ -95,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         saveFile();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(this.resetReceiver);
+    }
     public void saveFile() {
         String filename = "streamlineFile";
         FileOutputStream fileOutputStream;
@@ -135,10 +144,19 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         Intent intent = new Intent(MainActivity.this, MyReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
+    }
+
+    public void resetTimers() {
+        for(int i = 0; i<this.taskItemsLists.size(); i++) {
+            for(int j = 0; j<this.taskItemsLists.get(i).size(); j++) {
+                this.taskItemsLists.get(i).get(j).setTimeElapsed(0);
+            }
+        }
+        this.timerAdapter.notifyDataSetChanged();
     }
 
     public void addTask(TaskItem task) {
