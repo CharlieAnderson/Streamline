@@ -1,6 +1,14 @@
 
 BUG FIXES:
 
+TODO: Refactor duplicate functionality between createNotification and updateNotification
+
+TODO: Remove ability to drag header items at all
+
+TODO: Update notification bar icon so that its not just a blank circle
+
+TODO: Fix  FAB getting in the way of timerbar start buttons
+
 TODO: Fix delay with clock animation in last second before it calls onFinish
 
 TODO: Fix screen rotation from messing everything up
@@ -11,8 +19,6 @@ TODO: Maybe cleanup the code/interaction between CustomCountDownTimer and TimerC
 
 MVP FEATURES:
 
-TODO: Add functionality to allow timers to repeat daily, on certain days, or only once (possibly even more options)
-
 TODO: fix the UI / colors of timers/headers/buttons so it looks better
 
 TODO: add editing of timers
@@ -22,6 +28,8 @@ TODO: Add comments...
 TODO: Implement dragging Timers across whole sections
 
 POSSIBLE FEATURES:
+
+TODO: Add functionality to allow timers to repeat on certain days, or only once (possibly even more options)
 
 TODO: Make RecyclerView list subsections expandable/collapsible.
 

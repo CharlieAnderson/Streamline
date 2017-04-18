@@ -41,11 +41,12 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.section = taskItem.getSection();
         this.taskItem = taskItem;
         this.timerBar.getProgressDrawable().setColorFilter(taskItem.getColor(), PorterDuff.Mode.MULTIPLY);
-        this.timeElapsed.setText(R.string.timeStart);
+        //this.timeElapsed.setText(R.string.timeStart);
         this.timeElapsed.setText(parseTime(taskItem.getTimeElapsed(), true));
         this.timeLeft.setText(parseTime(taskItem.getTimeTotal()-taskItem.getTimeElapsed(), false));
         this.taskName.setText(taskItem.getTaskName());
         setProgress(taskItem.getProgress());
+
 
         this.startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +70,7 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public String parseTime(long milliseconds, boolean roundUp) {
+    public static String parseTime(long milliseconds, boolean roundUp) {
         int seconds;
         if(roundUp)
             seconds = (int)Math.ceil(milliseconds/1000.00);

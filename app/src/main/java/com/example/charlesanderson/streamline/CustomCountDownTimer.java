@@ -1,6 +1,9 @@
 package com.example.charlesanderson.streamline;
 
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
@@ -15,6 +18,8 @@ public class CustomCountDownTimer extends CountDownTimer {
     boolean isPaused;
     TextView countDownTimerText;
     CircleProgressView circleProgressViewSeconds;
+    TaskItem taskItem;
+    TimerBarAdapter timerAdapter;
     int taskPosition;
     long start;
     long timeLeft;
@@ -30,6 +35,9 @@ public class CustomCountDownTimer extends CountDownTimer {
         this.countDownTimerText = countDownTimerText;
         this.circleProgressViewSeconds = circleProgressViewSeconds;
         this.taskPosition = taskPosition;
+        this.timerAdapter = (((MainActivity)this.context).getTimerAdapter());
+        this.taskItem = timerAdapter.getTaskItem(taskPosition);
+        ((MainActivity)context).createTimerNotification(this.taskItem);
     }
 
     @Override
@@ -37,15 +45,13 @@ public class CustomCountDownTimer extends CountDownTimer {
         if(!this.isPaused) {
             this.timeLeft = (int)millisUntilFinished;
             this.countDownTimerText.setText(parseTime((int) millisUntilFinished));
-            circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
-            TimerBarAdapter timerAdapter = (((MainActivity)this.context).getTimerAdapter());
-            timerAdapter.getTaskItem(taskPosition).setHours(getHoursLeft());
-            timerAdapter.getTaskItem(taskPosition).setMinutes(getMinutesLeft());
-            timerAdapter.getTaskItem(taskPosition).setSeconds(getSecondsLeft());
-            timerAdapter.getTaskItem(taskPosition).setTimeElapsed(timeTotal-timeLeft);
+            this.circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
+            this.taskItem.setHours(getHoursLeft());
+            this.taskItem.setTimeElapsed(timeTotal-timeLeft);
             double progress = (100.0*((double)timeTotal-timeLeft)/(timeTotal));
-            timerAdapter.getTaskItem(taskPosition).setProgress((int)progress);
-            timerAdapter.notifyDataSetChanged();
+            this.taskItem.setProgress((int)progress);
+            ((MainActivity)context).updateTimerNotification(this.taskItem);
+            this.timerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -58,6 +64,15 @@ public class CustomCountDownTimer extends CountDownTimer {
         timerAdapter.getTaskItem(taskPosition).setProgress(100);
         timerAdapter.getTaskItem(taskPosition).setTimeElapsed(timeTotal);
         timerAdapter.notifyDataSetChanged();
+        ((MainActivity)context).updateTimerNotification(this.taskItem);
+
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(context.getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPaused(boolean isPaused){
