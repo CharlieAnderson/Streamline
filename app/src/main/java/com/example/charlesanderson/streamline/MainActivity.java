@@ -147,11 +147,13 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+        long delay = 24 * 60 * 60 * 1000;
+
         Intent intent = new Intent(MainActivity.this, MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()+delay,
+                AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     public void resetTimers() {

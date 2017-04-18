@@ -3,6 +3,10 @@ BUG FIXES:
 
 TODO: Refactor duplicate functionality between createNotification and updateNotification
 
+TODO: Remove ability to drag header items at all
+
+TODO: Update notification bar icon so that its not just a blank circle
+
 TODO: Fix  FAB getting in the way of timerbar start buttons
 
 TODO: Fix delay with clock animation in last second before it calls onFinish
