@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TimerBarAdapter timerAdapter;
     private BroadcastReceiver resetReceiver;
     private int notificationID;
+    private SQLiteHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +39,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.dbHelper = new SQLiteHelper(this);
         if(getSupportFragmentManager().findFragmentById(R.id.content_main) == null) {
             this.headerItems = new ArrayList<>();
             this.timerAdapters = new ArrayList<>();
 
-            this.readFile();
+            taskItemsLists = this.dbHelper.getAllRows();
             if(taskItemsLists == null) {
                 this.taskItemsLists = new ArrayList<>();
                 this.taskItemsLists.add(new ArrayList<TaskItem>());
@@ -100,14 +101,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        saveFile();
+        //saveFile();
+        saveTasks();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(this.resetReceiver);
+        this.dbHelper.close();
     }
+
+    public void saveTasks() {
+        for(int i = 0; i<this.taskItemsLists.size(); i++) {
+            for(int j = 0; j<this.taskItemsLists.get(i).size(); j++) {
+                this.dbHelper.updateTask(taskItemsLists.get(i).get(j));
+            }
+        }
+    }
+
     public void saveFile() {
         String filename = "streamlineFile";
         FileOutputStream fileOutputStream;
@@ -152,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()+delay,
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
@@ -235,19 +247,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addTask(TaskItem task) {
+        long id = this.dbHelper.insertTask(task);
+        task.setRowId(id);
         this.taskItemsLists.get(task.getSection().ordinal()).add(task);
         this.timerAdapter.notifyDataSetChanged();
     }
 
-    public void removeTask(TaskItem task) {
-        int position = taskItemsLists.indexOf(task);
-        this.taskItemsLists.get(task.getSection().ordinal()).remove(task);
-        this.timerAdapter.notifyItemRemoved(position);
-    }
-
-    public void removeTaskAt(RecyclerView.ViewHolder viewHolder) {
-        int position = viewHolder.getAdapterPosition();
-        this.taskItemsLists.remove(position);
+    public void removeTask(TaskItem task, int position) {
+        dbHelper.deleteTask(task);
+        this.taskItemsLists.get(task.getSection().ordinal()).remove(timerAdapter.getTaskListInnerIndex(position));
         this.timerAdapter.notifyItemRemoved(position);
     }
 

@@ -41,7 +41,6 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.section = taskItem.getSection();
         this.taskItem = taskItem;
         this.timerBar.getProgressDrawable().setColorFilter(taskItem.getColor(), PorterDuff.Mode.MULTIPLY);
-        //this.timeElapsed.setText(R.string.timeStart);
         this.timeElapsed.setText(parseTime(taskItem.getTimeElapsed(), true));
         this.timeLeft.setText(parseTime(taskItem.getTimeTotal()-taskItem.getTimeElapsed(), false));
         this.taskName.setText(taskItem.getTaskName());

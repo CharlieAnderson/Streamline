@@ -148,11 +148,6 @@ class TimerBarAdapter extends RecyclerView.Adapter implements StickyHeaderHandle
         return taskItemsLists;
     }
 
-    public void removeTaskItem(TaskItem.Section section, int position) {
-        this.taskItemsLists.get(section.ordinal()).remove(getTaskListInnerIndex(position));
-        notifyItemRemoved(position);
-    }
-
     public boolean onItemMove(int fromPosition, TaskItem.Section fromSection, int toPosition, TaskItem.Section toSection) {
         if(fromSection == toSection) {
             // moving element down
