@@ -17,38 +17,44 @@
         android:textSize="14sp" />
 
     <Button
+        android:textColor="#ffffff"
         android:id="@+id/timeButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/colorButton"
         android:layout_alignBottom="@+id/colorButton"
-        android:layout_alignStart="@+id/addTaskButton"
-        android:background="@color/material_color_blue_500"
+        android:layout_toEndOf="@+id/radioGroup"
+        android:background="@drawable/time_button_shape"
         android:text="@string/set_time" />
 
     <Button
+        android:textColor="#ffffff"
         android:id="@+id/colorButton"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/taskName"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="56dp"
-        android:layout_toStartOf="@+id/timeButton"
-        android:background="@color/material_color_red_500"
+        android:layout_above="@+id/radioGroup"
+        android:layout_marginBottom="55dp"
+        android:layout_toStartOf="@+id/addTaskButton"
+        android:background="@drawable/time_button_shape"
         android:text="@string/set_color" />
 
     <Button
         android:id="@+id/addTaskButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="167dp"
-        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:background="@drawable/gradient_button_shape"
+        android:textColor="#ffffff"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
         android:text="@string/add_task"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="13dp"
         android:layout_marginBottom="23dp"
+        android:shadowColor="#39FAD7"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="10"
         />
 
     <RadioGroup

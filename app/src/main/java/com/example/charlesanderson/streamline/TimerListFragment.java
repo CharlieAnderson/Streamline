@@ -38,6 +38,7 @@ public class TimerListFragment extends Fragment {
 
         List<TimerBarAdapter> timerAdapters = ((MainActivity) getActivity()).getTimerAdapters();
         final TimerBarAdapter timerBarAdapter = ((MainActivity) getActivity()).getTimerAdapter();
+        final MainActivity activity = (MainActivity) getActivity();
         final RecyclerView recyclerView1= (RecyclerView) rootView.findViewById(recyclerView);
         recyclerView1.setAdapter(timerBarAdapter);
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -58,7 +59,7 @@ public class TimerListFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
             {
-                timerBarAdapter.removeTaskItem(((TimerHolder) viewHolder).getSection(), viewHolder.getAdapterPosition());
+                activity.removeTask(((TimerHolder) viewHolder).getTaskItem(), viewHolder.getAdapterPosition());
             }
 
             @Override

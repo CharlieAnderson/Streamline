@@ -17,6 +17,7 @@ class TaskItem implements Serializable {
     private int progress;
     private long timeElapsed;
     private long timeTotal;  // millisconds that the clock was originally set for
+    private long rowId;
     private Section section;
     private String taskName;
 
@@ -76,6 +77,10 @@ class TaskItem implements Serializable {
         this.timeTotal = timeTotal;
     }
 
+    public void setRowId(long rowId) {
+        this.rowId = rowId;
+    }
+
     public int getHours() {
         return hours;
     }
@@ -110,5 +115,9 @@ class TaskItem implements Serializable {
 
     public long getTimeTotal() {
         return timeTotal;
+    }
+
+    public long getRowId() {
+        return rowId;
     }
 }
