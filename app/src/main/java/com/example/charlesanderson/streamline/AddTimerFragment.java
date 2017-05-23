@@ -44,6 +44,7 @@ public class AddTimerFragment extends Fragment {
                     @Override
                     public void onColorSelected(boolean positiveResult, @ColorInt int color) {
                         colorButton.setBackgroundColor(color);
+                        timeButton.setBackgroundColor(color);
                         AddTimerFragment.this.color = color;
 
                     }
@@ -59,6 +60,7 @@ public class AddTimerFragment extends Fragment {
                         AddTimerFragment.this.hours = hour;
                         AddTimerFragment.this.minutes = minute;
                         AddTimerFragment.this.timeInMilliseconds = hour*1000*60*60 + minute*1000*60;
+                        timeButton.setText(TimerHolder.parseTime(AddTimerFragment.this.timeInMilliseconds, false));
                     }
                 }, 0, 0);
                 timerPickerDialog.show();
@@ -87,4 +89,5 @@ public class AddTimerFragment extends Fragment {
         });
         return rootView;
     }
+
 }

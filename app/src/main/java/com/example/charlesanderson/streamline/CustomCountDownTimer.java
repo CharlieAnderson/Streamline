@@ -45,7 +45,7 @@ public class CustomCountDownTimer extends CountDownTimer {
         if(!this.isPaused) {
             this.timeLeft = (int)millisUntilFinished;
             this.countDownTimerText.setText(parseTime((int) millisUntilFinished));
-            this.circleProgressViewSeconds.setProgressWithAnimation((float) (((millisUntilFinished / 1000) % 60) / 60.0 * 100.0), 500);
+            this.circleProgressViewSeconds.setProgressWithAnimation((float) ((((timeTotal-millisUntilFinished) / 1000) % 60) / 60.0 * 100.0), 500);
             this.taskItem.setHours(getHoursLeft());
             this.taskItem.setTimeElapsed(timeTotal-timeLeft);
             double progress = (100.0*((double)timeTotal-timeLeft)/(timeTotal));
