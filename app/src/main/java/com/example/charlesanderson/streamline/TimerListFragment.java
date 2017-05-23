@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import static com.example.charlesanderson.streamline.R.id.recyclerView;
 
 /**
@@ -36,7 +34,6 @@ public class TimerListFragment extends Fragment {
             }
         });
 
-        List<TimerBarAdapter> timerAdapters = ((MainActivity) getActivity()).getTimerAdapters();
         final TimerBarAdapter timerBarAdapter = ((MainActivity) getActivity()).getTimerAdapter();
         final MainActivity activity = (MainActivity) getActivity();
         final RecyclerView recyclerView1= (RecyclerView) rootView.findViewById(recyclerView);

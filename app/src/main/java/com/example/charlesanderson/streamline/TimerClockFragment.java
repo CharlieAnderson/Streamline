@@ -80,8 +80,11 @@ public class TimerClockFragment extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
-
         return rootView;
+    }
+
+    public void pauseTimer() {
+        this.countDownTimer.setPaused(true);
     }
 
     public int convertToMilliseconds(int hours, int minutes, int seconds) {

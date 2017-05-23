@@ -46,7 +46,6 @@ public class TimerHolder extends RecyclerView.ViewHolder {
         this.taskName.setText(taskItem.getTaskName());
         setProgress(taskItem.getProgress());
 
-
         this.startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

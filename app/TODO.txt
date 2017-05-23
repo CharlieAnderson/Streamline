@@ -1,6 +1,8 @@
 
 BUG FIXES:
 
+TODO: Fix timers resetting everytime the app is closed.
+
 TODO: Refactor duplicate functionality between createNotification and updateNotification
 
 TODO: Remove ability to drag header items at all

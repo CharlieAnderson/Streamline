@@ -1,25 +1,22 @@
 package com.example.charlesanderson.streamline;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private TimerBarAdapter timerAdapter;
     private BroadcastReceiver resetReceiver;
     private int notificationID;
+    private NotificationCompat.Builder builder;
     private SQLiteHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.dbHelper = new SQLiteHelper(this);
+        String clockFragment = getIntent().getStringExtra("menuFragment");
+
         if(getSupportFragmentManager().findFragmentById(R.id.content_main) == null) {
             this.headerItems = new ArrayList<>();
             this.timerAdapters = new ArrayList<>();
@@ -71,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
             this.timerAdapter = new TimerBarAdapter(this, headerItems, taskItemsLists);
             Fragment timerListFragment = new TimerListFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_content, timerListFragment, "LIST_FRAGMENT").commit();
+        }
+
+        else if(getSupportFragmentManager().findFragmentByTag("CLOCK_FRAGMENT") != null ) {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("ClOCK_FRAGMENT");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_content, fragment, "CLOCK_FRAGMENT").commit();
+
         }
 
     }
@@ -112,45 +119,20 @@ public class MainActivity extends AppCompatActivity {
         this.dbHelper.close();
     }
 
+    @Override
+    public void onBackPressed() {
+        TimerClockFragment clockFragment = (TimerClockFragment) getSupportFragmentManager().findFragmentByTag("CLOCK_FRAGMENT");
+        if(clockFragment!=null) {
+            clockFragment.pauseTimer();
+        }
+        super.onBackPressed();
+    }
+
     public void saveTasks() {
         for(int i = 0; i<this.taskItemsLists.size(); i++) {
             for(int j = 0; j<this.taskItemsLists.get(i).size(); j++) {
                 this.dbHelper.updateTask(taskItemsLists.get(i).get(j));
             }
-        }
-    }
-
-    public void saveFile() {
-        String filename = "streamlineFile";
-        FileOutputStream fileOutputStream;
-        ObjectOutputStream objectOutputStream;
-
-        try {
-            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(getTaskItemsLists());
-            fileOutputStream.close();
-            objectOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void readFile() {
-        String filename = "streamlineFile";
-        FileInputStream fileInputStream;
-        ObjectInputStream objectInputStream;
-
-        try {
-            fileInputStream = this.openFileInput(filename);
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            List<List<TaskItem>> input = (List<List<TaskItem>>)objectInputStream.readObject();
-            if(input!=null)
-                setTaskItemsLists(input);
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -183,42 +165,30 @@ public class MainActivity extends AppCompatActivity {
         String timeElapsed = TimerHolder.parseTime(taskItem.getTimeElapsed(), true);
         String timeTotal = TimerHolder.parseTime(taskItem.getTimeTotal(), false);
         String progress = String.valueOf((int)Math.ceil(taskItem.getProgress()));
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        this.builder = new NotificationCompat.Builder(this);
+        // Sets an ID for the notification, so it can be updated
+        this.notificationID = 1;
+        this.builder.setAutoCancel(false);
+        this.builder.setOnlyAlertOnce(true);
         if(progress.equals("100")) {
-            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+            this.builder.setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle(taskTitle + " - Done!")
-                    .setContentText("");
+                    .setContentText("")
+                    .setProgress(100, 100, false);
         }
         else {
-            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+            this.builder.setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle(taskTitle +"    "+progress+"%")
+                    .setProgress(100, Integer.parseInt(progress), false)
                     .setContentText(timeElapsed+" / "+timeTotal);
         }
-
-        // Sets an ID for the notification, so it can be updated
-
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack for the Intent (but not the Intent itself)
-                stackBuilder.addParentStack(MainActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(
-                                0,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        );
-                builder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.builder.setVisibility(Notification.VISIBILITY_PRIVATE);
+        }
+        NotificationManager mNotificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-                mNotificationManager.notify(this.notificationID, builder.build());
+                mNotificationManager.notify(this.notificationID, this.builder.build());
     }
 
     public void updateTimerNotification(TaskItem taskItem) {
@@ -226,24 +196,32 @@ public class MainActivity extends AppCompatActivity {
         String timeElapsed = TimerHolder.parseTime(taskItem.getTimeElapsed(), true);
         String timeTotal = TimerHolder.parseTime(taskItem.getTimeTotal(), false);
         String progress = String.valueOf((int)Math.ceil(taskItem.getProgress()));
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        // Creates an explicit intent for an Activity in your app
         if(progress.equals("100")) {
-            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+            this.builder.setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle(taskTitle + " - Done!")
-                    .setContentText("");
+                    .setContentText("")
+                    .setProgress(100, 100, false);
         }
         else {
-            builder.setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentTitle(taskTitle +"    "+progress+"%")
-                    .setContentText(timeElapsed+" / "+timeTotal);
+            this.builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(taskTitle + "    " + progress + "%")
+                    .setProgress(100, Integer.parseInt(progress), false)
+                    .setContentText(timeElapsed + " / " + timeTotal);
         }
-
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        final Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        this.builder.setContentIntent(contentIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(this.notificationID, builder.build());
+        mNotificationManager.notify(this.notificationID, this.builder.build());
     }
 
     public void addTask(TaskItem task) {
